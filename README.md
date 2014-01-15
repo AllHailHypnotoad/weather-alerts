@@ -18,9 +18,9 @@ This app should be able to do the following when done.
 **Requirements**
 
 
-Python 2.7
-NOAA API
-Twillio API Library - pip install twillio
-Foursquare API Library - pip install foursquare
+- Python 2.7
+- NOAA API
+- Twillio API Library - pip install twillio
+- Foursquare API Library - pip install foursquare
 
 
