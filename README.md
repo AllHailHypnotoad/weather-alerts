@@ -22,5 +22,6 @@ This app should be able to do the following when done.
 - NOAA API
 - Twillio API Library - pip install twillio
 - Foursquare API Library - pip install foursquare
+- Postgres / Postgis
 
 
