@@ -5,6 +5,7 @@ Service that takes location data from foursquare check-ins and warns users if ba
 
 
 **To Do**
+
 This app should be able to do the following when done.
 
 1. Pull the location from a check-in
@@ -12,5 +13,14 @@ This app should be able to do the following when done.
 3. Using the Lat and Long contact NOAA
 4. Get the forcast from NOAA
 5. Use either Twellio or e-mail to send the forcast to you.
+
+
+**Requirements**
+
+
+Python 2.7
+NOAA API
+Twillio API Library - pip install twillio
+Foursquare API Library - pip install foursquare
 
 
