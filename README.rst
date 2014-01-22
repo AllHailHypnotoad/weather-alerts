@@ -4,7 +4,7 @@ weather-alerts
 Service that takes location data from foursquare check-ins and warns users if bad weather is forecast in the area.
 
 
-**To Do**
+**App Overview**
 
 This app should be able to do the following when done.
 
@@ -17,11 +17,17 @@ This app should be able to do the following when done.
 
 **Requirements**
 
-
 - Python 2.7
 - NOAA API
 - Twillio API Library - pip install twillio
 - Foursquare API Library - pip install foursquare
 - Postgres / Postgis
 
-
+**To DO**
+(roughly in order of priority)
+- Foursquare API prototype
+- NOAA Data examples
+- Twilio Messaging Script
+- Setup SQLAlchemy with a POstgresDB
+- Create alert model for db
+- Create alert view for flask
