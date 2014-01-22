@@ -24,10 +24,13 @@ This app should be able to do the following when done.
 - Postgres / Postgis
 
 **To DO**
+
 (roughly in order of priority)
 - Foursquare API prototype
 - NOAA Data examples
 - Twilio Messaging Script
+- Look into using OAuth2 to simplify login process
 - Setup SQLAlchemy with a POstgresDB
 - Create alert model for db
 - Create alert view for flask
+
