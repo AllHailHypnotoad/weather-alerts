@@ -23,9 +23,9 @@ This app should be able to do the following when done.
 - Foursquare API Library - pip install foursquare
 - Postgres / Postgis
 
-**To DO**
 
-(roughly in order of priority)
+**To DO (roughly in order of priority)**
+
 - Foursquare API prototype
 - NOAA Data examples
 - Twilio Messaging Script
