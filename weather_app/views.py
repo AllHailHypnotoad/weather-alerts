@@ -1,14 +1,8 @@
-from config import SECRET_KEY
 from flask import Flask, request, render_template, flash, redirect, url_for
 from flask.ext.login import LoginManager, login_user, login_required, logout_user, session, current_user
 from database import db_session
+from weather_app import app, login_manager
 from models import *
-
-app = Flask(__name__)
-login_manager = LoginManager()
-app.secret_key = SECRET_KEY
-login_manager.init_app(app)
-login_manager.login_view = "login"
 
 
 @login_manager.user_loader
@@ -42,7 +36,7 @@ def signup():
             error = 'User name already taken, please choose another one'
         else:
             session['logged_in'] = True
-            user = User(name=request.form['username'], password=request.form['password'], 
+            user = User(name=request.form['username'], password=request.form['password'],
                     email=request.form['email'])
             db_session.add(user)
             db_session.commit()
@@ -59,6 +53,7 @@ def user_home_page():
     message2 = "Here is your home page"
     return render_template("user_home_page.html", message1=message1, message2=message2)
 
+
 @app.route("/logout")
 @login_required
 def logout():
@@ -66,11 +61,7 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db_session.remove()
-
-
-if __name__ == '__main__':
-    app.debug = True
-    app.run()

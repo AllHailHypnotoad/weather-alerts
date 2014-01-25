@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, Table
 from sqlalchemy.orm import relationship, backref
 from flask.ext.login import UserMixin
-from database import Base
+from .database import Base
 
 
 class User(UserMixin, Base):
