@@ -1,5 +1,4 @@
-from flask import (Flask, request, render_template, flash, redirect,
-    url_for, session)
+from flask import (request, render_template, flash, redirect, g, url_for, session)
 from flask.ext.login import (login_user, logout_user, current_user,
     login_required)
 
@@ -15,8 +14,27 @@ def load_user(id):
     """
     return User.query.get(int(id))
 
+@app.before_request
+def before_request():
+    """
+    Place the flask-login current_user into g.user to allow access to
+    the user object from templates.
+    """
+    g.user = current_user
+
+@app.route("/")
+@app.route("/index")
+@login_required
+def index():
+    return render_template("user_home_page.html")
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    # user already logged in
+    if g.user is not None and g.user.is_authenticated():
+        return redirect(url_for('index'))
+
+    # no user
     error = None
     page = 'login'
     if request.method == 'POST':
@@ -24,12 +42,10 @@ def login():
         if user == None or request.form['password'] != user.password:
             error = 'Invalid login information'
         else:
-            session['logged_in'] = True
             login_user(user)
             flash('You were logged in.')
-            return redirect(url_for('user_home_page'))
+            return redirect(url_for('index'))
     return render_template('login.html', error=error, page=page)
-
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -47,23 +63,15 @@ def signup():
             db.session.commit()
             login_user(user)
             flash('Thanks for signing up, you are now logged in')
-            return redirect(url_for('user_home_page'))
+            return redirect(url_for('index'))
     return render_template('signup.html', error=error, page=page)
-
-
-@app.route("/", methods=["GET", "POST"])
-@login_required
-def user_home_page():
-    message1 = "Welcome back, " + current_user.name
-    message2 = "Here is your home page"
-    return render_template("user_home_page.html", message1=message1, message2=message2)
 
 @app.route("/logout")
 @login_required
 def logout():
     session.pop('logged_in', None)
     logout_user()
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
 
 @app.route('/forecast')
 @login_required

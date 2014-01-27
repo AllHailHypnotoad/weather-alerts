@@ -1,5 +1,13 @@
-{% extends "layout.html" %}
-{% block body%}
-    <h2>{{ message1 }}</h2>
-    <li><h2>{{ message2 }}</h2>
+{% extends "base.html" %}
+{% block content %}
+    {% if g.user.is_authenticated() %}
+        <div class=metanav>
+            <a href="{{ url_for('logout') }}"> log out</a>
+        </div>
+        <h2>Welcome back {{ g.user.name }}!</h2>
+        <li><h2>Access your current weather forecast.</h2>
+    {% else %}
+        <h2>Please <a href="{{ url_for('login') }}">log in</a> or
+        <a href="{{ url_for('signup') }}">sign up</a> for your forecast!</h2>
+    {% endif %}
 {% endblock %}

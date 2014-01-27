@@ -1,16 +1,20 @@
-{% extends "layout.html" %}
-{% block body %}
-    <h2>sign up</h2>
-    {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+{% extends "base.html" %}
+
+{% block content %}
+    <p>You're a few steps away from getting a customized weather report!</p>
+    {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}
+    {% endif %}
+
     <form action="{{ url_for('signup') }}" method=post>
         <dl>
             <dt>Username:
-            <dd><input type=text name=username>
+            <dd><input type="text" name="username">
             <dt>Email:
-            <dd><input type=email name=email>
+            <dd><input type="email" name="email">
             <dt>Password:
-            <dd><input type=password name=password>
-            <dd><input type=submit value=Login>
+            <dd><input type="password" name="password">
+            <dd><input type="submit" value="Login">
         </dl>
     </form>
 {% endblock %}
