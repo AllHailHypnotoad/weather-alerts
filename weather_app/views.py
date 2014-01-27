@@ -64,3 +64,14 @@ def logout():
     session.pop('logged_in', None)
     logout_user()
     return redirect(url_for('login'))
+
+@app.route('/forecast')
+@login_required
+def forecast():
+    # get hold of current user
+
+    # check if user has token
+
+    # if user has token then get the last check-in from foursquare
+
+    pass
