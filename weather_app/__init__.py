@@ -5,7 +5,7 @@ from flask.ext.login import LoginManager
 app = Flask(__name__)
 app.config.from_object('config')
 
-# create database object
+# create flask-sqlalchemy database object
 db = SQLAlchemy(app)
 
 # use flask-login
