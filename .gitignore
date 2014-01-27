@@ -3,3 +3,4 @@ lib/
 *.pyc
 include/
 .Python
+hypnotoad_account.txt
