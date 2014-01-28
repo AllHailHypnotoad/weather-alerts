@@ -3,3 +3,4 @@ lib/
 *.pyc
 include/
 .Python
+local_settings.py
