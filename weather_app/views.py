@@ -85,8 +85,12 @@ def forecast():
         if user.fs_access_token is not None and user.fs_access_token != '':
             # use the access token to get user's data
             foursquare_client = Foursquare(access_token=user.fs_access_token)
-            user = foursquare_client.users()
-            return jsonify(user)
+
+            # user = foursquare_client.users()
+            # most recent user checkin
+            last_checkin = foursquare_client.users.checkins(params={'limit':1})
+
+            return jsonify(last_checkin)
         else:
             # get secret and urls
             fs_client_id = app.config['FS_CLIENT_ID']
