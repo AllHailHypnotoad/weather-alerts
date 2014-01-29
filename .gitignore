@@ -4,3 +4,5 @@ lib/
 include/
 .Python
 local_settings.py
+*.ini
+weather.db

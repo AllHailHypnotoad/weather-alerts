@@ -14,6 +14,7 @@ def weather_forecast(lat, long):
         each_forecast = {}
         each_forecast["hour"] = forecast["FCTTIME"]["civil"]
         each_forecast["condition"] = forecast["condition"]
+        each_forecast["temp"] = forecast["temp"]["english"]
         each_forecast["pop"] = forecast["pop"]
 
         forecast_list.append(each_forecast)
