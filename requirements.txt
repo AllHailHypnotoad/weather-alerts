@@ -1,7 +1,12 @@
 Flask==0.10.1
+Flask-Login==0.2.9
 Jinja2==2.7.2
 MarkupSafe==0.18
 Werkzeug==0.9.4
+httplib2==0.8
 itsdangerous==0.23
+requests==2.2.1
+six==1.5.2
+twilio==3.6.4
+unittest2==0.5.1
 wsgiref==0.1.2
-Flask-Login==0.2.9
