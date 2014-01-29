@@ -23,6 +23,14 @@ This app should be able to do the following when done.
 - Foursquare API Library - pip install foursquare
 - Postgres / Postgis
 
+**Installation Instructions**
+
+-git clone repository
+-cd repository folder
+-virtualenv .
+-. bin/activate
+-pip install -r requirements.txt
+
 
 **To DO (roughly in order of priority)**
 
