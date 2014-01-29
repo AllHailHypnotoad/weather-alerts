@@ -6,3 +6,4 @@ include/
 local_settings.py
 *.ini
 weather.db
+hypnotoad_account.txt
