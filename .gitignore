@@ -5,5 +5,5 @@ include/
 .Python
 local_settings.py
 *.ini
-*.db
+weather.db
 hypnotoad_account.txt
