@@ -1,5 +1,6 @@
 from weather_app import db
 from flask.ext.login import UserMixin
+from foursquare import Foursquare
 
 # db is a SQLALchemy object provided by flask-sqlalchemy that provides:
 # - all the functions and classes from sqlalchemy and slalchemy.orm
@@ -24,3 +25,12 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return '<User: %r>' % (self.name)
+
+    def has_valid_fs_access_token(self):
+        return (self.fs_access_token is not None and
+            self.fs_access_token != '')
+
+    def last_fs_checkin(self):
+        # use the access token to get user's data
+        foursquare_client = Foursquare(access_token=self.fs_access_token)
+        return foursquare_client.users.checkins(params={'limit':1})

@@ -75,6 +75,21 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route("/prompt_fs_authorize")
+@login_required
+def prompt_fs_authorize():
+    # get secret and urls
+    fs_client_id = app.config['FS_CLIENT_ID']
+    fs_client_secret = app.config['FS_CLIENT_SECRET']
+    fs_redirect_uri = app.config['FS_REDIRECT_URI']
+
+    # get fs redirect link
+    foursquare_client = Foursquare(client_id=fs_client_id,
+        client_secret=fs_client_secret, redirect_uri=fs_redirect_uri)
+    fs_authorize_url = foursquare_client.oauth.auth_url()
+    return render_template('fs_authorize.html',
+        fs_link=fs_authorize_url)
+
 @app.route('/forecast')
 @login_required
 def forecast():
@@ -82,28 +97,13 @@ def forecast():
     user = current_user
 
     if user:
-        if user.fs_access_token is not None and user.fs_access_token != '':
-            # use the access token to get user's data
-            foursquare_client = Foursquare(access_token=user.fs_access_token)
-
-            # user = foursquare_client.users()
-            # most recent user checkin
-            last_checkin = foursquare_client.users.checkins(params={'limit':1})
-
-            return jsonify(last_checkin)
+        if user.has_valid_fs_access_token():
+            return jsonify(user.last_fs_checkin())
         else:
-            # get secret and urls
-            fs_client_id = app.config['FS_CLIENT_ID']
-            fs_client_secret = app.config['FS_CLIENT_SECRET']
-            fs_redirect_uri = app.config['FS_REDIRECT_URI']
-
-            # redirect user to foursquare authenticate page
-            foursquare_client = Foursquare(client_id=fs_client_id,
-                client_secret=fs_client_secret, redirect_uri=fs_redirect_uri)
-            fs_authorization_url = foursquare_client.oauth.auth_url()
-            return redirect(fs_authorization_url)
+            return redirect(url_for(prompt_fs_authorize))
     else:
         # no user (shouldn't happen)
+        # todo: log error here
         return redirect(url_for('login'))
 
 @app.route('/callback', methods=['GET', ])
