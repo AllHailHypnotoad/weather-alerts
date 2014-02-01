@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if g.user.is_authenticated() %}
+        <div class=metanav>
+            <a href="{{ url_for('logout') }}"> log out</a>
+        </div>
+        <h2>Hi {{ g.user.name }}!</h2>
+        <p>Oops! Looks like we don't yet have permission from you to access your Foursquare data. Please proceed to <a href={{ fs_link }}>Foursquare for authorization.</a></p>
+    {% else %}
+        <h2>Please <a href="{{ url_for('login') }}">log in</a> or
+        <a href="{{ url_for('signup') }}">sign up</a> for your forecast!</h2>
+    {% endif %}
+{% endblock %}

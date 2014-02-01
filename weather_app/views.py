@@ -4,9 +4,10 @@ from flask.ext.login import (login_user, logout_user, current_user,
 from flask.json import jsonify
 
 from foursquare import Foursquare
+import json
 
 from weather_app import app, db, login_manager
-from .models import User
+from .models import User, Checkin
 
 @login_manager.user_loader
 def load_user(id):
@@ -75,6 +76,21 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route("/prompt_fs_authorize")
+@login_required
+def prompt_fs_authorize():
+    # get secret and urls
+    fs_client_id = app.config['FS_CLIENT_ID']
+    fs_client_secret = app.config['FS_CLIENT_SECRET']
+    fs_redirect_uri = app.config['FS_REDIRECT_URI']
+
+    # get fs redirect link
+    foursquare_client = Foursquare(client_id=fs_client_id,
+        client_secret=fs_client_secret, redirect_uri=fs_redirect_uri)
+    fs_authorize_url = foursquare_client.oauth.auth_url()
+    return render_template('fs_authorize.html',
+        fs_link=fs_authorize_url)
+
 @app.route('/forecast')
 @login_required
 def forecast():
@@ -82,28 +98,27 @@ def forecast():
     user = current_user
 
     if user:
-        if user.fs_access_token is not None and user.fs_access_token != '':
-            # use the access token to get user's data
-            foursquare_client = Foursquare(access_token=user.fs_access_token)
+        if user.has_valid_fs_access_token():
+            last_checkin = user.last_fs_checkin()
+            fs_id = last_checkin['checkins']['items'][0]['id']
+            fs_created_at = last_checkin['checkins']['items'][0]['createdAt']
+            name = last_checkin['checkins']['items'][0]['venue']['name']
+            location = last_checkin['checkins']['items'][0]['venue']['location']
+            lat = location['lat']
+            lng = location['lng']
+            checkin = Checkin(name=name, fs_id=fs_id,
+                fs_created_at=fs_created_at, lat=lat, lng=lng, user=user)
+            db.session.add(checkin)
+            db.session.commit()
 
-            # user = foursquare_client.users()
-            # most recent user checkin
-            last_checkin = foursquare_client.users.checkins(params={'limit':1})
-
-            return jsonify(last_checkin)
+            # query for checkin
+            user_last_checkin = user.checkins.first()
+            return "hello, checked in at %s" % user_last_checkin.name
         else:
-            # get secret and urls
-            fs_client_id = app.config['FS_CLIENT_ID']
-            fs_client_secret = app.config['FS_CLIENT_SECRET']
-            fs_redirect_uri = app.config['FS_REDIRECT_URI']
-
-            # redirect user to foursquare authenticate page
-            foursquare_client = Foursquare(client_id=fs_client_id,
-                client_secret=fs_client_secret, redirect_uri=fs_redirect_uri)
-            fs_authorization_url = foursquare_client.oauth.auth_url()
-            return redirect(fs_authorization_url)
+            return redirect(url_for('prompt_fs_authorize'))
     else:
         # no user (shouldn't happen)
+        # todo: log error here
         return redirect(url_for('login'))
 
 @app.route('/callback', methods=['GET', ])
