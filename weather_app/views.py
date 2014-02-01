@@ -99,21 +99,8 @@ def forecast():
 
     if user:
         if user.has_valid_fs_access_token():
-            last_checkin = user.last_fs_checkin()
-            fs_id = last_checkin['checkins']['items'][0]['id']
-            fs_created_at = last_checkin['checkins']['items'][0]['createdAt']
-            name = last_checkin['checkins']['items'][0]['venue']['name']
-            location = last_checkin['checkins']['items'][0]['venue']['location']
-            lat = location['lat']
-            lng = location['lng']
-            checkin = Checkin(name=name, fs_id=fs_id,
-                fs_created_at=fs_created_at, lat=lat, lng=lng, user=user)
-            db.session.add(checkin)
-            db.session.commit()
-
-            # query for checkin
-            user_last_checkin = user.checkins.first()
-            return "hello, checked in at %s" % user_last_checkin.name
+            last_checkin = user.get_last_checkin()
+            return "hello, checked in at %s" % last_checkin.name
         else:
             return redirect(url_for('prompt_fs_authorize'))
     else:
