@@ -49,7 +49,7 @@ class User(db.Model, UserMixin):
             lng = location['lng']
 
             checkin = Checkin(name=name, fs_id=fs_id,
-                fs_created=fs_created, lat=lat, lng=lng, user=user)
+                fs_created=fs_created, lat=lat, lng=lng, user=self)
             db.session.add(checkin)
             db.session.commit()
             return checkin
