@@ -30,21 +30,33 @@ class User(db.Model, UserMixin):
         foursquare_client = Foursquare(access_token=self.fs_access_token)
         fs_checkin = foursquare_client.users.checkins(params={'limit':1})
 
+        if (fs_checkin['checkins']['count'] == 0):
+            # foursquare did not send the user's last checkin
+            # possible that the user have not ever checked in
+            last_stored_checkin = self.checkins.order_by('-id').first()
+
+            if last_stored_checkin is None:
+                # don't have a last checkin stored for this user
+                return None
+            else:
+                return last_stored_checkin
+
+        # got a checkin from foursquare
         # is this a newer checkin than what we have in the database?
         fs_id = fs_checkin['checkins']['items'][0]['id']
         fs_created = fs_checkin['checkins']['items'][0]['createdAt']
-        fs_created_tz_offset = fs_checkin['checkins']['items'][0]['timeZoneOffset']
 
         # get user's last checkin stored in the database
         last_stored_checkin = self.checkins.order_by('-id').first()
 
         # if checkin table is empty or the stored fs_checkin id doesn't match
         # the checkin fs_id received from fs, then add the checkin received
-        # from foursquare
+        # from foursquare to the list of checkins for this user
         if (last_stored_checkin is None or
             last_stored_checkin.fs_created != fs_created):
 
             name = fs_checkin['checkins']['items'][0]['venue']['name']
+            fs_created_tz_offset = fs_checkin['checkins']['items'][0]['timeZoneOffset']
             location = fs_checkin['checkins']['items'][0]['venue']['location']
             lat = location['lat']
             lng = location['lng']
@@ -55,6 +67,8 @@ class User(db.Model, UserMixin):
             db.session.commit()
             return checkin
         else:
+            # foursquare does not keep state of the checkins it sends
+            # we have seen this checkin before
             return last_stored_checkin
 
 class Checkin(db.Model):

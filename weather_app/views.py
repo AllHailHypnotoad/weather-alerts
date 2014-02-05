@@ -1,10 +1,8 @@
 from flask import (request, render_template, flash, redirect, g, url_for, session)
 from flask.ext.login import (login_user, logout_user, current_user,
     login_required)
-from flask.json import jsonify
 
 from foursquare import Foursquare
-import json
 
 from weather_app import app, db, login_manager
 from .models import User, Checkin
@@ -97,16 +95,21 @@ def forecast():
     # get hold of current user
     user = current_user
 
-    if user:
-        if user.has_valid_fs_access_token():
-            last_checkin = user.get_last_checkin()
-            return "hello, you last checked in at %s, lat = %f, lng = %f" % (last_checkin.name, last_checkin.lat, last_checkin.lng)
-        else:
-            return redirect(url_for('prompt_fs_authorize'))
-    else:
-        # no user (shouldn't happen)
-        # todo: log error here
+    if user is None:
+        # unable to obtain current user,
+        # perhaps user entered url directly
         return redirect(url_for('login'))
+
+    # valid user, valid access token?
+    if not user.has_valid_fs_access_token():
+        return redirect(url_for('prompt_fs_authorize'))
+
+    # valid access token
+    last_checkin = user.get_last_checkin()
+    if last_checkin is not None:
+        return "hello, you last checked in at %s, lat = %f, lng = %f" % (last_checkin.name, last_checkin.lat, last_checkin.lng)
+    else:
+        return "oops! we weren't able to get a check in from foursquare. perhaps you haven't checked in yet?"
 
 @app.route('/callback', methods=['GET', ])
 def callback():
