@@ -33,6 +33,7 @@ class User(db.Model, UserMixin):
         # is this a newer checkin than what we have in the database?
         fs_id = fs_checkin['checkins']['items'][0]['id']
         fs_created = fs_checkin['checkins']['items'][0]['createdAt']
+        fs_created_tz_offset = fs_checkin['checkins']['items'][0]['timeZoneOffset']
 
         # get user's last checkin stored in the database
         last_stored_checkin = self.checkins.order_by('-id').first()
@@ -48,8 +49,8 @@ class User(db.Model, UserMixin):
             lat = location['lat']
             lng = location['lng']
 
-            checkin = Checkin(name=name, fs_id=fs_id,
-                fs_created=fs_created, lat=lat, lng=lng, user=user)
+            checkin = Checkin(name=name, fs_id=fs_id, fs_created=fs_created,
+                fs_created_tz_offset=fs_created_tz_offset, lat=lat, lng=lng, user=self)
             db.session.add(checkin)
             db.session.commit()
             return checkin
@@ -63,9 +64,11 @@ class Checkin(db.Model):
     name = db.Column(db.String(120))
     fs_id = db.Column(db.Text)
     fs_created = db.Column(db.Integer)
+    fs_created_tz_offset = db.Column(db.Integer)
     lat = db.Column(db.Float)
     lng = db.Column(db.Float)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __repr__(self):
-        return "<Checked in: %s>" % (self.name)
+        return "<Checked in: %s, lat: %f, lng: %f>" % (self.name,
+            self.lat, self.lng)

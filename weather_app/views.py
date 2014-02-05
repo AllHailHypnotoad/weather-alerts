@@ -100,7 +100,7 @@ def forecast():
     if user:
         if user.has_valid_fs_access_token():
             last_checkin = user.get_last_checkin()
-            return "hello, checked in at %s" % last_checkin.name
+            return "hello, you last checked in at %s, lat = %f, lng = %f" % (last_checkin.name, last_checkin.lat, last_checkin.lng)
         else:
             return redirect(url_for('prompt_fs_authorize'))
     else:
