@@ -31,6 +31,7 @@ This app should be able to do the following when done.
 - virtualenv .
 - . bin/activate
 - pip install -r requirements.txt
+- python db_create.py
 
 
 **To DO (roughly in order of priority)**
