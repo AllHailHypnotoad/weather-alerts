@@ -70,7 +70,7 @@ class User(db.Model, UserMixin):
         else:
             # foursquare does not keep state of the checkins it sends
             # we have seen this checkin before
-            return last_stored_checkin
+            return None
 
 
 class Checkin(db.Model):
