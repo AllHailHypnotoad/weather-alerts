@@ -7,6 +7,31 @@ from foursquare import Foursquare
 from weather_app import app, db, login_manager
 from .models import User, Checkin
 
+
+def format_phone(phn):
+    """
+    This function attempts to format the phone variable. Currently accepts
+    inputs with dashes and spaces.  It removes those values and then checks
+    to make sure all remaing values are valid integers.  If the country
+    code was ommitted (currently only for the US), it is added, 
+    additionally a + is added to the front of the string to comply with 
+    Twilio's API.  If the format appears to be invalid, None is returned,
+    and an error can be raised to the user.
+    """
+    phn = str(phn).translate(None, "- +")
+    for digit in phn:
+        if not digit.isdigit():
+            return None
+    if phn[0] != 1:
+        phn = "+1" + phn
+    else:
+        phn = "+" + phn
+    if len(phn) == 12:
+        return phn
+    else:
+        return None
+
+
 @login_manager.user_loader
 def load_user(id):
     """
@@ -56,10 +81,13 @@ def signup():
 
     if request.method == 'POST':
         user_check = User.query.filter_by(name=request.form['username']).first()
+        phone = format_phone(request.form['phone'])
         if user_check != None:
             error = 'User name already taken, please choose another one'
+        elif phone == None:
+            error = 'Invalid Phone Number'
         else:
-            user = User(name=request.form['username'],
+            user = User(name=request.form['username'], phone=phone,
                 password=request.form['password'], email=request.form['email'])
             db.session.add(user)
             db.session.commit()

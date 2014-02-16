@@ -14,6 +14,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     email = db.Column(db.String(120), unique=True, index=True)
+    phone = db.Column(db.String(12))
     password = db.Column(db.String(120))
     fs_access_token = db.Column(db.Text)
     checkins = db.relationship('Checkin', backref='user', lazy='dynamic')
@@ -70,6 +71,7 @@ class User(db.Model, UserMixin):
             # foursquare does not keep state of the checkins it sends
             # we have seen this checkin before
             return last_stored_checkin
+
 
 class Checkin(db.Model):
     __tablename__ = 'checkins'
