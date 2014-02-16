@@ -14,9 +14,10 @@ client = TwilioRestClient(ACCOUNT_SID, Auth_Token)
 zoidburg = "(\/) (*,,,*) (\/)"
 
 
-def sms(mes):
+def sms(phone):
+    mes = "There is a greater than 50% chance that it will rain in the next 5 hours"
     message = client.sms.messages.create(body="%s" %mes,
-        to="+16504551729",    # Replace with your phone number
+        to=phone,    # Replace with your phone number
         from_=MY_CALLER_ID) # Replace with your Twilio number
     print message.sid
 

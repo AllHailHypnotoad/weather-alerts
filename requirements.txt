@@ -1,3 +1,4 @@
+APScheduler==2.1.2
 BeautifulSoup==3.2.1
 Flask==0.10.1
 Flask-Login==0.2.9
@@ -6,7 +7,9 @@ Jinja2==2.7.2
 MarkupSafe==0.18
 SQLAlchemy==0.9.1
 Werkzeug==0.9.4
+argparse==1.2.1
 beautifulsoup4==4.3.2
+distribute==0.6.24
 foursquare==2014.01.18
 httplib2==0.8
 itsdangerous==0.23
