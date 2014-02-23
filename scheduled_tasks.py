@@ -15,7 +15,7 @@ def run_tasks():
     for user in users:
         last_checkin = user.get_last_checkin()
         if last_checkin:
-            cur_weather = forecast(lat=last_chekin.lat, lon=last_checkin.lng)
+            cur_weather = forecast(last_checkin.lat, last_checkin.lng)
             """
             Some bare bones logic to get started
             Grabs the next 5 prob of percip values (pop) form the weather underground
