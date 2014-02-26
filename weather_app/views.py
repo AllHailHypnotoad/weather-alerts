@@ -1,6 +1,7 @@
 from flask import (request, render_template, flash, redirect, g, url_for, session)
 from flask.ext.login import (login_user, logout_user, current_user,
     login_required)
+from forms import EditAlertForm
 
 from foursquare import Foursquare
 
@@ -88,7 +89,8 @@ def signup():
             error = 'Invalid Phone Number'
         else:
             user = User(name=request.form['username'], phone=phone,
-                password=request.form['password'], email=request.form['email'])
+                password=request.form['password'], email=request.form['email'], 
+                hrs=3, pop=25)
             db.session.add(user)
             db.session.commit()
             login_user(user)
@@ -163,4 +165,24 @@ def callback():
         db.session.commit()
 
     return redirect(url_for('forecast'))
+
+
+@app.route('/editalert', methods=['GET', 'POST'])
+@login_required
+def editalert():
+    form = EditAlertForm()
+    user = current_user
+    if form.validate_on_submit():
+        user.hrs = form.hrs.data
+        user.pop = form.pop.data
+        db.session.add(user)
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('index'))
+    elif request.method != "POST":
+        form.hrs.data = user.hrs
+        form.pop.data = user.pop
+    return render_template('editalert.html', form=form)
+
+
 

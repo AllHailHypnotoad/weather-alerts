@@ -17,6 +17,8 @@ class User(db.Model, UserMixin):
     phone = db.Column(db.String(12))
     password = db.Column(db.String(120))
     fs_access_token = db.Column(db.Text)
+    hrs = db.Column(db.Integer)
+    pop = db.Column(db.Integer)
     checkins = db.relationship('Checkin', backref='user', lazy='dynamic')
 
     def __repr__(self):
@@ -32,7 +34,7 @@ class User(db.Model, UserMixin):
         fs_checkin = foursquare_client.users.checkins(params={'limit':1})
 
         # flag to indicate that the checkin is new
-        new_chk = 0
+        new_chk = False
 
         if (fs_checkin['checkins']['count'] == 0):
             # foursquare did not send the user's last checkin
@@ -69,12 +71,12 @@ class User(db.Model, UserMixin):
                 fs_created_tz_offset=fs_created_tz_offset, lat=lat, lng=lng, user=self)
             db.session.add(checkin)
             db.session.commit()
-            new_chk = 1
+            new_chk = True
             return checkin, new_chk
         else:
             # foursquare does not keep state of the checkins it sends
             # we have seen this checkin before
-            return None, new_chk
+            return last_stored_checkin, new_chk
 
 
 class Checkin(db.Model):

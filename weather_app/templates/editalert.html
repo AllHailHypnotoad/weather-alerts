@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Edit Your Alert Settings</h1>
+<form action="" method="post" name="edit">
+    {{form.hidden_tag()}}
+    <table>
+        <tr>
+            <td># of hours to look ahead for rain in forecast after a new checkin:</td>
+            <td>{{form.hrs(size=12)}}</td>
+        </tr>
+        <tr>
+            <td>Minimum percent of precipitation to trigger alert (please enter an integer i.e 50 for 50%):</td>
+            <td>{{form.pop(size=12)}}</td>
+        </tr>
+            <td></td>
+            <td><input type="submit" value="Save Changes"></td>
+        </tr>
+    </table>
+</form>
+{% endblock %}

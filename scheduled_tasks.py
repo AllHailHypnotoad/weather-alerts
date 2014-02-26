@@ -22,8 +22,8 @@ def run_tasks():
             data.  If pop is greater than or equal to 50 in the next 5 hours we will send an alert
             """
             alert = False
-            for cur in cur_weather[0:4]:
-                if int(cur['pop']) >= 50:
+            for cur in cur_weather[0:(user.hrs - 1)]:
+                if int(cur['pop']) >= user.pop:
                     alert = True    
             # If it looks like there will be rain, send an sms
             # Need to modify the user class to contain phone numbers
