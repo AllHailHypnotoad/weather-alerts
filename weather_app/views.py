@@ -133,7 +133,7 @@ def forecast():
         return redirect(url_for('prompt_fs_authorize'))
 
     # valid access token
-    last_checkin = user.get_last_checkin()
+    last_checkin, new_chk = user.get_last_checkin()
     if last_checkin is not None:
         return "hello, you last checked in at %s, lat = %f, lng = %f" % (last_checkin.name, last_checkin.lat, last_checkin.lng)
     else:

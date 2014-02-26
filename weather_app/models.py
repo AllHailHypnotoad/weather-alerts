@@ -31,6 +31,9 @@ class User(db.Model, UserMixin):
         foursquare_client = Foursquare(access_token=self.fs_access_token)
         fs_checkin = foursquare_client.users.checkins(params={'limit':1})
 
+        # flag to indicate that the checkin is new
+        new_chk = 0
+
         if (fs_checkin['checkins']['count'] == 0):
             # foursquare did not send the user's last checkin
             # possible that the user have not ever checked in
@@ -38,9 +41,9 @@ class User(db.Model, UserMixin):
 
             if last_stored_checkin is None:
                 # don't have a last checkin stored for this user
-                return None
+                return None, new_chk
             else:
-                return last_stored_checkin
+                return last_stored_checkin, new_chk
 
         # got a checkin from foursquare
         # is this a newer checkin than what we have in the database?
@@ -66,11 +69,12 @@ class User(db.Model, UserMixin):
                 fs_created_tz_offset=fs_created_tz_offset, lat=lat, lng=lng, user=self)
             db.session.add(checkin)
             db.session.commit()
-            return checkin
+            new_chk = 1
+            return checkin, new_chk
         else:
             # foursquare does not keep state of the checkins it sends
             # we have seen this checkin before
-            return None
+            return None, new_chk
 
 
 class Checkin(db.Model):

@@ -13,8 +13,8 @@ sched = Scheduler()
 def run_tasks():
     users = User.query.all()
     for user in users:
-        last_checkin = user.get_last_checkin()
-        if last_checkin:
+        last_checkin, new_chk = user.get_last_checkin()
+        if new_chk:
             cur_weather = forecast(last_checkin.lat, last_checkin.lng)
             """
             Some bare bones logic to get started
