@@ -22,16 +22,18 @@ def run_tasks():
             data.  If pop is greater than or equal to 50 in the next 5 hours we will send an alert
             """
             alert = False
+            mes = ""
             for cur in cur_weather[0:(user.hrs - 1)]:
                 if int(cur['pop']) >= user.pop:
-                    alert = True    
+                    alert = True
+                    mes = "There is a greater than %s % chance that it will rain in the next %s hours" % (user.pop, user.hrs)
             # If it looks like there will be rain, send an sms
             # Need to modify the user class to contain phone numbers
             # Also need to modify the sms function to accept phone numbers
             # Need to condsider how we might clean up phone numbers
             if alert:
                 print "Alert sent to " + user.name
-                sms(user.phone)
+                sms(user.phone, mes)
     print "Scheduled tasks run"
     
     

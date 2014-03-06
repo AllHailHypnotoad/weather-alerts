@@ -9,4 +9,6 @@ weather.db
 hypnotoad_account.txt
 .env
 nohup.out
+Scripts/
+build/
 
