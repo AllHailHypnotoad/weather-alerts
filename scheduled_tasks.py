@@ -2,7 +2,7 @@ from apscheduler.scheduler import Scheduler
 import time
 from send_sms import sms
 from WUnder import forecast
-from weather_app.models import *
+from weather_app.models import User
 
 
 sched = Scheduler()
