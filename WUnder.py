@@ -1,8 +1,5 @@
 import requests
-import local_settings
-
-
-WG_API_KEY = local_settings.WG_API_KEY
+from local_settings import WG_API_KEY
 
 
 def forecast(lat, long):
